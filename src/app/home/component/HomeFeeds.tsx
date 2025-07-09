@@ -127,24 +127,29 @@ export default function HomePage() {
                         posts.map((post) => (
 
                             <div key={post.id} className="bg-white border rounded shadow p-4">
-                                
-                                <div className="flex items-center gap-3 mb-2" onClick={() => router.push(`/post/${post.id}`)}>
+
+                                <div className="flex items-center gap-3 mb-2">
                                     <Image
                                         src={post.user.avatar || '/logo.png'}
                                         alt={post.user.username}
                                         width={40}
                                         height={40}
                                         className="rounded-full object-cover"
+                                        onClick={() => {
+                                            router.push(`/profile/${post?.user?.username}`);
+                                        }}
                                     />
                                     <p className="font-semibold">{post.user.username}</p>
                                 </div>
 
-                                <div className="relative w-full h-[400px] mb-2">
+                                <div className="relative w-full h-[400px] mb-2" >
                                     <Image
                                         src={post.image_path}
                                         alt={post.caption || 'Post image'}
                                         fill
                                         className="object-contain rounded"
+                                        onClick={() => router.push(`/post/${post.id}`)}
+
                                     />
                                 </div>
 
@@ -158,44 +163,15 @@ export default function HomePage() {
                                     </button>
                                     <p className="text-sm">{post.likes_count ?? 0} likes</p>
 
-                                    <button onClick={() => console.log('Open comments')}>
+                                    <button onClick={() => router.push(`/post/${post.id}`)}>
                                         <MessageCircle size={24} className="text-gray-600 hover:text-blue-500 transition-colors" />
                                     </button>
                                 </div>
-
-                                {/* Caption */}
                                 <p className="text-sm">{post.caption}</p>
                             </div>
                         ))
                     )}
                 </div>
-
-                {/* Explore Users Section */}
-                {/* <div className="w-full md:w-[300px] space-y-3">
-                <h2 className="text-lg font-semibold">Explore Users</h2>
-                {exploreUsers.length === 0 ? (
-                    <p>No users to explore.</p>
-                ) : (
-                    exploreUsers.map((user) => (
-                        <div key={user.id} className="flex items-center gap-3 bg-white p-2 rounded border">
-                            <Image
-                                src={user.avatar}
-                                alt={user.username}
-                                width={40}
-                                height={40}
-                                className="rounded-full"
-                            />
-                            <p className="font-medium">{user.username}</p>
-                            <button
-                                className="ml-auto text-sm text-blue-500 hover:text-blue-600"
-                                onClick={() => console.log(`Follow ${user.username}`)}
-                            >
-                                Follow
-                            </button>
-                        </div>
-                    ))
-                )}
-            </div> */}
             </div>
         </div>
     );

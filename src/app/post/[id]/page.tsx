@@ -130,82 +130,82 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
     }
 
     return (
-        <div className="max-w-md mx-auto p-4">
+        <div className="h-screen overflow-y-scroll bg-[#fafafa] text-[#262626] dark:bg-[#131313] dark:text-[#f1f5f9] dark:[color-scheme:dark]">
             <Header page="Home" />
-            <div className="relative w-full aspect-square rounded overflow-hidden mb-4">
-                <Image
-                    src={post.image_path || '/default-post-image.jpg'}
-                    alt={post.caption || 'Post image'}
-                    fill
-                    className="object-cover"
-                />
-            </div>
+            <div className="w-full max-w-lg mx-auto max-w-md mx-auto px-4 py-6">
+                <div className="relative w-full aspect-square rounded overflow-hidden mb-4">
+                    <Image
+                        src={post.image_path || '/default-post-image.jpg'}
+                        alt={post.caption || 'Post image'}
+                        fill
+                        className="object-contain rounded"
+                    />
+                </div>
+
+                <div className="py-4 mb-4">
+                    <p className="font-semibold">{post.caption}</p>
+                    <div className="flex items-center gap-4 mb-2">
+                        <button onClick={() => handleLikeOrUnlike(post.is_liked)}>
+                            <Heart
+                                size={24}
+                                className={`transition-colors ${post.is_liked ? 'text-red-500' : 'text-gray-700'} hover:text-red-500`}
+                            />
+                        </button>
+                        <p className="text-sm">{post.likes_count ?? 0} likes</p>
+
+                        <button onClick={() => console.log('Open comments')}>
+                            <MessageCircle size={24} className="text-gray-600 hover:text-blue-500 transition-colors" />
+                        </button>
+                    </div>
+                </div>
 
 
-            <div className="mb-4">
-                <p className="font-semibold">{post.caption}</p>
-                <div className="flex items-center gap-4 mb-2">
-                    <button onClick={() => handleLikeOrUnlike(post.is_liked)}>
-                        <Heart
-                            size={24}
-                            className={`transition-colors ${post.is_liked ? 'text-red-500' : 'text-gray-700'
-                                } hover:text-red-500`}
-                        />
-                    </button>
-                    <p className="text-sm">{post.likes_count ?? 0} likes</p>
+                <div className="mb-4 pd-2">
+                    <h3 className="font-semibold mb-2">Comments</h3>
+                    {comments.length === 0 ? (
+                        <p className="text-sm text-gray-500">No comments yet.</p>
+                    ) : (
+                        <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                            {comments.map((comment) => (
+                                <div key={comment.id} className="flex items-start gap-2">
+                                    <div className="w-8 h-8 relative flex-shrink-0">
+                                        <Image
+                                            src={comment.user?.avatar || '/logo.png'}
+                                            alt='avatar'
+                                            fill
+                                            className="rounded-full object-cover"
+                                        />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm">
+                                            <span className="font-semibold mr-1">{comment.user?.username}</span>
+                                            {comment.body}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
 
-                    <button onClick={() => console.log('Open comments')}>
-                        <MessageCircle size={24} className="text-gray-600 hover:text-blue-500 transition-colors" />
+
+                <div className="flex gap-2 items-center">
+                    <input
+                        type="text"
+                        value={commentInput}
+                        onChange={(e) => setCommentInput(e.target.value)}
+                        placeholder="Add a comment..."
+                        className="flex-1 border rounded px-3 py-2 text-sm focus:outline-none"
+                        disabled={postingComment}
+                    />
+                    <button
+                        onClick={handlePostComment}
+                        disabled={postingComment || !commentInput.trim()}
+                        className="text-blue-500 font-semibold text-sm disabled:opacity-50"
+                    >
+                        {postingComment ? 'Posting...' : 'Post'}
                     </button>
                 </div>
-            </div>
-
-
-            <div className="mb-4">
-                <h3 className="font-semibold mb-2">Comments</h3>
-                {comments.length === 0 ? (
-                    <p className="text-sm text-gray-500">No comments yet.</p>
-                ) : (
-                    <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
-                        {comments.map((comment) => (
-                            <div key={comment.id} className="flex items-start gap-2">
-                                <div className="w-8 h-8 relative flex-shrink-0">
-                                    <Image
-                                        src={comment.user?.avatar || '/logo.png'}
-                                        alt='avatar'
-                                        fill
-                                        className="rounded-full object-cover"
-                                    />
-                                </div>
-                                <div>
-                                    <p className="text-sm">
-                                        <span className="font-semibold mr-1">{comment.user?.username}</span>
-                                        {comment.body}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-
-
-            <div className="flex gap-2 items-center">
-                <input
-                    type="text"
-                    value={commentInput}
-                    onChange={(e) => setCommentInput(e.target.value)}
-                    placeholder="Add a comment..."
-                    className="flex-1 border rounded px-3 py-2 text-sm focus:outline-none"
-                    disabled={postingComment}
-                />
-                <button
-                    onClick={handlePostComment}
-                    disabled={postingComment || !commentInput.trim()}
-                    className="text-blue-500 font-semibold text-sm disabled:opacity-50"
-                >
-                    {postingComment ? 'Posting...' : 'Post'}
-                </button>
             </div>
         </div>
     );

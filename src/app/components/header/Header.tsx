@@ -18,9 +18,11 @@ function Header({ page }: { page: string }) {
 
   const router = useRouter();
   const [nameSearch, setNameSearch] = useState('');
+  const [listSearchResults, setListSearchResults] = useState([]);
   const [searchWindow, setSearchWindow] = useState(false);
   const [avatarDropDown, setAvatarDropDown] = useState(false);
   const [addPost, setAddPost] = useState(false);
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -49,6 +51,37 @@ function Header({ page }: { page: string }) {
     };
     fetchProfile();
   }, []);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(nameSearch);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [nameSearch]);
+
+  useEffect(() => {
+    if (!debouncedSearch.trim()) return;
+
+    fetch(`${baseUrl}/api/search/${debouncedSearch}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setSearchWindow(true);
+        setNameSearch(debouncedSearch);
+        setListSearchResults(data.result.data);
+      })
+      .catch((error) => console.error(error));
+  }, [debouncedSearch]);
+
   const handleSignOut = () => {
     fetch(baseUrl + '/api/logout', {
       method: 'POST',
@@ -79,7 +112,7 @@ function Header({ page }: { page: string }) {
           </a>
         </div>
 
-        {/* Search */}
+
         <div className="relative hidden sm:flex flex-1 justify-center max-w-xs mx-2">
           <input
             className="w-full rounded-lg bg-[#efefef] py-[6px] pl-10 pr-2 focus:outline-0 dark:bg-[#131313]"
@@ -93,7 +126,7 @@ function Header({ page }: { page: string }) {
           {searchWindow && (
             <HeaderSearchWindow
               loading={false}
-              userDetails={[]}
+              userDetails={listSearchResults}
               searchName={nameSearch}
             />
           )}

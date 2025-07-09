@@ -21,7 +21,6 @@ function HeaderSearchWindow({
       <div className="flex h-full items-center justify-center">
         {loading || searchName === '' ? (
           <div className="h-8 w-8 ">
-            {/* <SpinnerSVG /> */}
           </div>
         ) : (
           <div className="h-full w-full overflow-y-scroll py-3">
@@ -31,22 +30,19 @@ function HeaderSearchWindow({
               </div>
             ) : (
               userDetails.map((details, index) => (
-                // item will not be deleted or updated so it is okay to use index as a key
-                // eslint-disable-next-line react/no-array-index-key
-                <Link href={`/${details.username}`} key={index}>
+                <Link href={`/profile/${details.username}`} key={index}>
                   <div className="flex cursor-pointer items-center py-3 pl-5 hover:bg-[#f8f8f8] dark:hover:bg-[#131313]">
                     {' '}
-                    {details.avatarURL ? (
+                    {details.avatar ? (
                       <Image
                         className="h-11 w-11 rounded-full object-cover"
-                        src={details.avatarURL}
+                        src={details.avatar}
                         alt="avatar"
                         width="44"
                         height="44"
                       />
                     ) : (
                       <div className="h-11 w-11">
-                        {/* <ProfilePicSVG strokeWidth="1" /> */}
                       </div>
                     )}
                     <p className="ml-5">{details.username}</p>
